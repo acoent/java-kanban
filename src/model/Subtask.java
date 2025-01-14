@@ -1,15 +1,22 @@
+package model;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private Epic parentEpic;
+    private Integer parentEpicId;
 
-    public Subtask(Epic parentEpic, String name, String description, int id) {
-        super(name, description, id);
-        this.parentEpic = parentEpic;
+    public Subtask(Integer parentEpicId, String name, String description) {
+        super(name, description);
+        this.parentEpicId = parentEpicId;
     }
 
-    public Epic getParentEpic() {
-        return parentEpic;
+    public Subtask(Integer parentEpicId, String name, String description, Status status) {
+        super(name, description, status);
+        this.parentEpicId = parentEpicId;
+    }
+
+    public Integer getParentEpicId() {
+        return parentEpicId;
     }
 
     @Override
@@ -18,12 +25,12 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return Objects.equals(parentEpic, subtask.parentEpic);
+        return Objects.equals(parentEpicId, subtask.parentEpicId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), parentEpic);
+        return Objects.hash(super.hashCode(), parentEpicId);
     }
 
     @Override
@@ -33,7 +40,7 @@ public class Subtask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
-                ", parentEpicID=" + getParentEpic().getId() +
+                ", parentEpicID=" + getParentEpicId() +
                 '}';
     }
 }

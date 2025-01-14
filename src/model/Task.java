@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 
 public class Task {
@@ -6,11 +8,16 @@ public class Task {
     private int id;
     private Status status;
 
-    public Task(String taskName, String description, int id) {
+    public Task(String taskName, String description) {
         this.taskName = taskName;
         this.description = description;
-        this.id = id;
         status = Status.NEW;
+    }
+
+    public Task(String taskName, String description, Status status) {
+        this.taskName = taskName;
+        this.description = description;
+        this.status = status;
     }
 
     public String getTaskName() {
@@ -20,7 +27,9 @@ public class Task {
     public String getDescription() {
         return description;
     }
-
+    public void setId(int id) {
+        this.id = id;
+    }
     public int getId() {
         return id;
     }
