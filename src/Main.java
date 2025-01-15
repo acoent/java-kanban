@@ -31,9 +31,9 @@ public class Main {
 
         taskManager.setTaskStatus(0, Status.IN_PROGRESS);
         taskManager.setTaskStatus(1, Status.DONE);
-        taskManager.setSubtaskStatus(4, Status.DONE);
-        taskManager.setSubtaskStatus(5, Status.IN_PROGRESS);
-        taskManager.setSubtaskStatus(6, Status.DONE);
+        taskManager.updateSubtaskStatus(4, Status.DONE);
+        taskManager.updateSubtaskStatus(5, Status.IN_PROGRESS);
+        taskManager.updateSubtaskStatus(6, Status.DONE);
 
         System.out.println(taskManager.getEpics());
         System.out.println(taskManager.getTasks());

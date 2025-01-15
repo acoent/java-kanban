@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private Integer parentEpicId;
+    private final Integer parentEpicId;
 
     public Subtask(Integer parentEpicId, String name, String description) {
         super(name, description);
