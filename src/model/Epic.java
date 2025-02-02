@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subtaskIds;
+    private final ArrayList<Integer> subtaskIds;
 
     public Epic(String name, String description) {
         super(name, description);
         subtaskIds = new ArrayList<>();
+    }
+
+    public Epic(String name, String description, Status status, ArrayList<Integer> subtaskIds) {
+        super(name, description, status);
+        this.subtaskIds = subtaskIds;
     }
 
     public void removeAllSubtasks() {
@@ -16,6 +21,10 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Integer subtaskId) {
+        // Проверяем, что эпик не пытается добавить себя как подзадачу
+        if (subtaskId.equals(this.getId())) {
+            throw new IllegalArgumentException("Epic cannot be a subtask of itself");
+        }
         subtaskIds.add(subtaskId);
     }
 

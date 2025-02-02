@@ -3,8 +3,8 @@ package model;
 import java.util.Objects;
 
 public class Task {
-    private String description;
-    private String taskName;
+    private final String description;
+    private final String taskName;
     private int id;
     private Status status;
 
@@ -23,7 +23,6 @@ public class Task {
     public String getTaskName() {
         return taskName;
     }
-
     public String getDescription() {
         return description;
     }
