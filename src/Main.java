@@ -2,12 +2,13 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
-import service.InMemoryTaskManager;
+import service.Managers;
+import service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager TaskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefaultInMemoryManager();
 
         Task task1 = new Task("Task1", "Description1");
         Task task2 = new Task("Task2", "Description2");
@@ -17,33 +18,33 @@ public class Main {
         Subtask subtask2 = new Subtask(2, "sub2", "SubDescription2");
         Subtask subtask3 = new Subtask(3, "sub3", "SubDescription3");
 
-        TaskManager.addTask(task1);
-        TaskManager.addTask(task2);
-        TaskManager.addEpic(epic1);
-        TaskManager.addEpic(epic2);
-        TaskManager.addSubtask(subtask1);
-        TaskManager.addSubtask(subtask2);
-        TaskManager.addSubtask(subtask3);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addEpic(epic1);
+        taskManager.addEpic(epic2);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
 
-        System.out.println(TaskManager.getEpics());
-        System.out.println(TaskManager.getTasks());
-        System.out.println(TaskManager.getSubtasks());
+        System.out.println(taskManager.getEpics());
+        System.out.println(taskManager.getTasks());
+        System.out.println(taskManager.getSubtasks());
 
-        TaskManager.setTaskStatus(0, Status.IN_PROGRESS);
-        TaskManager.setTaskStatus(1, Status.DONE);
-        TaskManager.updateSubtaskStatus(4, Status.DONE);
-        TaskManager.updateSubtaskStatus(5, Status.IN_PROGRESS);
-        TaskManager.updateSubtaskStatus(6, Status.DONE);
+        taskManager.setTaskStatus(0, Status.IN_PROGRESS);
+        taskManager.setTaskStatus(1, Status.DONE);
+        taskManager.updateSubtaskStatus(4, Status.DONE);
+        taskManager.updateSubtaskStatus(5, Status.IN_PROGRESS);
+        taskManager.updateSubtaskStatus(6, Status.DONE);
 
-        System.out.println(TaskManager.getEpics());
-        System.out.println(TaskManager.getTasks());
-        System.out.println(TaskManager.getSubtasks());
+        System.out.println(taskManager.getEpics());
+        System.out.println(taskManager.getTasks());
+        System.out.println(taskManager.getSubtasks());
 
-        TaskManager.removeTask(0);
-        TaskManager.removeEpic(2);
+        taskManager.removeTask(0);
+        taskManager.removeEpic(2);
 
-        System.out.println(TaskManager.getEpics());
-        System.out.println(TaskManager.getTasks());
-        System.out.println(TaskManager.getSubtasks());
+        System.out.println(taskManager.getEpics());
+        System.out.println(taskManager.getTasks());
+        System.out.println(taskManager.getSubtasks());
     }
 }

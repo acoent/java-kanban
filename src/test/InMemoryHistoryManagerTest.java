@@ -49,14 +49,13 @@ class InMemoryHistoryManagerTest {
     @Test
     void testHistoryManagerSavesTaskVersions() {
         taskManager = Managers.getDefaultInMemoryManager();
-        historyManager = ((service.InMemoryTaskManager) taskManager).getHistoryManager();
         Task task = new Task("Task", "Description");
         taskManager.addTask(task);
         Task task1 = taskManager.getTaskById(task.getId());
         task.setStatus(model.Status.IN_PROGRESS);
         taskManager.taskUpdate(task.getId(), task);
         Task task2 = taskManager.getTaskById(task.getId());
-        List<Task> history = historyManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(2, history.size());
         assertEquals(model.Status.NEW, history.get(0).getStatus());
         assertEquals(model.Status.IN_PROGRESS, history.get(1).getStatus());

@@ -25,6 +25,7 @@ class TaskTest {
         assertEquals(Status.NEW, task.getStatus());
         assertEquals("TaskDescription", task.getDescription());
     }
+
     @Test
     void testTasksEqualityById() {
         Task task1 = new Task("Task", "Description");
@@ -33,6 +34,7 @@ class TaskTest {
         task2.setId(1);
         assertEquals(task1, task2);
     }
+
     @Test
     void testStatus() {
         taskManager.setTaskStatus(task.getId(), Status.IN_PROGRESS);
@@ -46,6 +48,7 @@ class TaskTest {
         String expected = "Task{taskName='Task', description='TaskDescription', id=" + task.getId() + ", status=NEW}";
         assertEquals(expected, task.toString());
     }
+
     @Test
     void testTaskImmutabilityOnAdd() {
         Task task = new Task("Task", "Description");

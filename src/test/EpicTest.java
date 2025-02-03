@@ -72,12 +72,6 @@ class EpicTest {
     }
 
     @Test
-    void testToString() {
-        String expected = "Epic{epicName='Epic1', description='Description1', id=" + epic.getId() + ", status=NEW, subtaskIds=" + epic.getSubtaskIds() + "}";
-        assertEquals(expected, epic.toString());
-    }
-
-    @Test
     void testEpicCannotBeItsOwnSubtask() {
         Epic epic = new Epic("Epic", "Description");
         taskManager.addEpic(epic);

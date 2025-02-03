@@ -21,7 +21,6 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Integer subtaskId) {
-        // Проверяем, что эпик не пытается добавить себя как подзадачу
         if (subtaskId.equals(this.getId())) {
             throw new IllegalArgumentException("Epic cannot be a subtask of itself");
         }
