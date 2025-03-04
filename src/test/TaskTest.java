@@ -1,4 +1,4 @@
-package tests;
+package test;
 
 import model.Status;
 import model.Task;
