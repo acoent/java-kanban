@@ -79,4 +79,15 @@ class EpicTest {
         taskManager.addSubtask(subtask);
         Assertions.assertNotEquals(epic.getId(), subtask.getId());
     }
+    @Test
+    void testSubtaskIdRemovedFromEpic() {
+        int subtaskId = subtask1.getId();
+
+        // Удаляем подзадачу
+        taskManager.removeSubtask(subtaskId);
+
+        // Проверяем, что ID удаленной подзадачи больше нет в списке подзадач эпика
+        Assertions.assertFalse(epic.getSubtaskIds().contains(subtaskId));
+    }
+
 }

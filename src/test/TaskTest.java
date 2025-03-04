@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 import service.TaskManager;
+import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,4 +60,15 @@ class TaskTest {
         assertEquals("Task", fetchedTask.getTaskName());
         assertEquals("Description", fetchedTask.getDescription());
     }
+
+    @Test
+    void testChangeTaskId() {
+        Task task = new Task("Task1", "Description1");
+        task.setId(1);
+        taskManager.addTask(task);
+        task.setId(2);
+        Assertions.assertNull(taskManager.getTaskById(1));
+        Assertions.assertEquals(task, taskManager.getTaskById(2));
+    }
+
 }

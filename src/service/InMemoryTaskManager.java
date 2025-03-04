@@ -194,6 +194,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask != null) {
             int parentId = subtask.getParentEpicId();
             subtasks.remove(id);
+            subtask.setId(-1);
             Epic parentEpic = epics.get(parentId);
             if (parentEpic != null) {
                 parentEpic.getSubtaskIds().remove(Integer.valueOf(id));

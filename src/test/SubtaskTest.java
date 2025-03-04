@@ -88,4 +88,12 @@ class SubtaskTest {
         assertNotEquals(subtask.getId(), epic.getId());
     }
 
+    @Test
+    void testSubtaskIdAfterRemoval() {
+        Subtask subtask = new Subtask(epic.getId(), "Subtask", "Description");
+        taskManager.addSubtask(subtask);
+        int subtaskId = subtask.getId();
+        taskManager.removeSubtask(subtaskId);
+        assertNotEquals(subtaskId, subtask.getId());
+    }
 }
