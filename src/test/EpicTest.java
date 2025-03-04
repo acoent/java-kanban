@@ -79,6 +79,7 @@ class EpicTest {
         taskManager.addSubtask(subtask);
         Assertions.assertNotEquals(epic.getId(), subtask.getId());
     }
+
     @Test
     void testSubtaskIdRemovedFromEpic() {
         int subtaskId = subtask1.getId();

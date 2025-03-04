@@ -126,6 +126,7 @@ class InMemoryTaskManagerTest {
         assertNull(taskManager.getEpicById(epic.getId()));
         assertEquals(0, taskManager.getSubtasks().size());
     }
+
     @Test
     public void testChangingTaskIdViaSetterBreaksManagerMapping() {
         InMemoryTaskManager manager = new InMemoryTaskManager();
