@@ -1,4 +1,4 @@
-package test;
+package service;
 
 import model.Epic;
 import model.Status;
@@ -7,8 +7,6 @@ import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.InMemoryTaskManager;
-import service.TaskManager;
 
 import java.util.List;
 
@@ -125,5 +123,28 @@ class InMemoryTaskManagerTest {
         taskManager.removeEpic(epic.getId());
         assertNull(taskManager.getEpicById(epic.getId()));
         assertEquals(0, taskManager.getSubtasks().size());
+    }
+
+    @Test
+    public void testChangingTaskIdViaSetterBreaksManagerMapping() {
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+        Task task = new Task("Test Task", "Description");
+        task.setId(2);
+        manager.addTask(task);
+        assertNull(manager.getTaskById(2));
+    }
+
+    @Test
+    public void testChangingSubtaskStatusBySetterBypassesEpicStatusUpdate() {
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+        Epic epic = new Epic("Epic Task", "Description");
+        epic.setId(30);
+        manager.addEpic(epic);
+        Subtask subtask = new Subtask(epic.getId(), "Subtask", "Description", Status.NEW);
+        subtask.setId(31);
+        manager.addSubtask(subtask);
+        assertEquals(Status.NEW, epic.getStatus());
+        subtask.setStatus(Status.DONE);
+        assertEquals(Status.NEW, epic.getStatus());
     }
 }

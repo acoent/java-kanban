@@ -1,7 +1,6 @@
-package test;
+package model;
 
-import model.Status;
-import model.Task;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
@@ -59,4 +58,15 @@ class TaskTest {
         assertEquals("Task", fetchedTask.getTaskName());
         assertEquals("Description", fetchedTask.getDescription());
     }
+
+    @Test
+    void testChangeTaskId() {
+        Task task = new Task("Task1", "Description1");
+        task.setId(33);
+        taskManager.addTask(task);
+        task.setId(22);
+        Assertions.assertNull(taskManager.getTaskById(33));
+        Assertions.assertNull(taskManager.getTaskById(22));
+    }
+
 }

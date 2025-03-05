@@ -1,8 +1,5 @@
-package test;
+package model;
 
-import model.Epic;
-import model.Status;
-import model.Subtask;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,4 +76,16 @@ class EpicTest {
         taskManager.addSubtask(subtask);
         Assertions.assertNotEquals(epic.getId(), subtask.getId());
     }
+
+    @Test
+    void testSubtaskIdRemovedFromEpic() {
+        int subtaskId = subtask1.getId();
+
+        // Удаляем подзадачу
+        taskManager.removeSubtask(subtaskId);
+
+        // Проверяем, что ID удаленной подзадачи больше нет в списке подзадач эпика
+        Assertions.assertFalse(epic.getSubtaskIds().contains(subtaskId));
+    }
+
 }
