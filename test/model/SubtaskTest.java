@@ -1,6 +1,5 @@
-import model.Epic;
-import model.Status;
-import model.Subtask;
+package model;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import service.TaskManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 class SubtaskTest {
     private TaskManager taskManager;
     private Epic epic;
@@ -92,6 +91,6 @@ class SubtaskTest {
         taskManager.addSubtask(subtask);
         int subtaskId = subtask.getId();
         taskManager.removeSubtask(subtaskId);
-        assertNotEquals(subtaskId, subtask.getId());
+        assertFalse(taskManager.isValidSubtaskId(subtaskId));
     }
 }

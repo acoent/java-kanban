@@ -1,10 +1,11 @@
+package service;
+
 import model.Status;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.HistoryManager;
-import service.InMemoryHistoryManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,15 +106,27 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldCorrectlyHandleHistoryLimit() {
-        for (int i = 0; i < 15; i++) {
+        List<Task> addedTasks = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
             Task task = new Task("Task" + i, "Description" + i);
             task.setId(i);
             historyManager.add(task);
+            addedTasks.add(task);
         }
-        historyManager.remove(0);
-        historyManager.remove(13);
         List<Task> history = historyManager.getHistory();
-        assertEquals(13, history.size());
-        assertEquals("Task1", history.getFirst().getTaskName());
+        assertEquals(4, history.size());
+        for (Task task : addedTasks) {
+            historyManager.remove(task.getId());
+        }
+        history = historyManager.getHistory();
+        assertTrue(history.isEmpty());
+        for (int i = 0; i < 4; i++) {
+            Task task = new Task("Task" + i, "Description" + i);
+            task.setId(i + 10);
+            historyManager.add(task);
+        }
+        history = historyManager.getHistory();
+        assertEquals(4, history.size());
+        assertEquals("Task0", history.getFirst().getTaskName());
     }
 }

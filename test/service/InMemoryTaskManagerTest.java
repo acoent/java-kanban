@@ -1,3 +1,5 @@
+package service;
+
 import model.Epic;
 import model.Status;
 import model.Subtask;
@@ -5,8 +7,6 @@ import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.InMemoryTaskManager;
-import service.TaskManager;
 
 import java.util.List;
 

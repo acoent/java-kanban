@@ -47,20 +47,19 @@ public class InMemoryHistoryManager implements HistoryManager {
         Task task;
         Node prev;
         Node next;
-
         Node(Task task) {
             this.task = task;
         }
     }
 
     private void linkLast(Node node) {
-        if (tail == null) {
-            head = tail = node;
+        if (head == null) {
+            head = node;
         } else {
             tail.next = node;
             node.prev = tail;
-            tail = node;
         }
+        tail = node;
     }
 
     private void unlink(Node node) {
