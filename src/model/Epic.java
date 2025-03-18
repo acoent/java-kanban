@@ -11,6 +11,11 @@ public class Epic extends Task {
         subtaskIds = new ArrayList<>();
     }
 
+    public Epic(String name, String description, Status status) {
+        super(name, description, status);
+        subtaskIds = new ArrayList<>();
+    }
+
     public Epic(String name, String description, Status status, ArrayList<Integer> subtaskIds) {
         super(name, description, status);
         this.subtaskIds = subtaskIds;
@@ -32,17 +37,6 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return "Epic{" +
-                "epicName='" + getTaskName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", id=" + getId() +
-                ", status=" + getStatus() +
-                ", subtaskIds=" + getSubtaskIds() +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -55,4 +49,10 @@ public class Epic extends Task {
     public int hashCode() {
         return Objects.hash(super.hashCode(), subtaskIds);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d,%s,%s,%s,%s", getId(), Type.EPIC, getTaskName(), getStatus(), getDescription());
+    }
+
 }

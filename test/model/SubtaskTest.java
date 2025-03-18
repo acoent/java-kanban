@@ -6,9 +6,8 @@ import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 import service.TaskManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+
 class SubtaskTest {
     private TaskManager taskManager;
     private Epic epic;
@@ -70,7 +69,7 @@ class SubtaskTest {
 
     @Test
     void testSubtaskToString() {
-        String expected = "Subtask{subtaskName='Subtask1', description='Subtask Description', id=" + subtask.getId() + ", status=NEW, parentEpicID=" + epic.getId() + "}";
+        String expected = "1,SUBTASK,Subtask1,NEW,Subtask Description,0";
         assertEquals(expected, subtask.toString());
     }
 
@@ -78,10 +77,8 @@ class SubtaskTest {
     void testSubtaskCannotBeItsOwnEpic() {
         Epic epic = new Epic("Epic", "Description");
         taskManager.addEpic(epic);
-
         Subtask subtask = new Subtask(epic.getId(), "Subtask", "Description");
         taskManager.addSubtask(subtask);
-
         assertNotEquals(subtask.getId(), epic.getId());
     }
 
