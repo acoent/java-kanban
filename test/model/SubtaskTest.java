@@ -69,7 +69,7 @@ class SubtaskTest {
 
     @Test
     void testSubtaskToString() {
-        String expected = "1,SUBTASK,Subtask1,NEW,Subtask Description,0";
+        String expected = "Subtask{subtaskName='Subtask1', description='Subtask Description', id=1, status=NEW, parentEpicID=0}";
         assertEquals(expected, subtask.toString());
     }
 

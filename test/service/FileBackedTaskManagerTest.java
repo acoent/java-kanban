@@ -25,7 +25,6 @@ class FileBackedTaskManagerTest {
     }
 
 
-
     @Test
     void shouldSaveAndLoadEmptyFile() {
         manager.save();

@@ -24,6 +24,10 @@ public class Task {
         return taskName;
     }
 
+    public Type getType() {
+        return Type.TASK;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -59,6 +63,11 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s", getId(), Type.TASK, getTaskName(), getStatus(), getDescription());
+        return "Task{" +
+                "taskName='" + taskName + '\'' +
+                ", description='" + description + '\'' +
+                ", id=" + id +
+                ", status=" + status +
+                '}';
     }
 }

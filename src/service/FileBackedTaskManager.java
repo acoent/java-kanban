@@ -1,7 +1,10 @@
 package service;
 
 import exception.ManagerSaveException;
-import model.*;
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,22 +15,24 @@ import java.nio.file.Files;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
+    private static final String CSV_HEADER = "id,type,name,status,description,epic";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
+
     public void save() throws ManagerSaveException {
         try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write(CSV_HEADER + "\n");
             for (Task task : getTasks()) {
-                writer.write(task + "\n");
+                writer.write(Converter.toString(task) + "\n");
             }
             for (Epic epic : getEpics()) {
-                writer.write(epic + "\n");
+                writer.write(Converter.toString(epic) + "\n");
             }
             for (Subtask subtask : getSubtasks()) {
-                writer.write(subtask + "\n");
+                writer.write(Converter.toString(subtask) + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении данных в файл", e);
@@ -41,7 +46,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             String line;
             reader.readLine();
             while ((line = reader.readLine()) != null) {
-                Task task = fromString(line);
+                Task task = Converter.fromString(line);
                 if (task instanceof Epic) {
                     manager.addEpic((Epic) task);
                 } else if (task instanceof Subtask) {
@@ -54,33 +59,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             throw new ManagerSaveException("Ошибка при загрузке данных из файла", e);
         }
         return manager;
-    }
-
-    private static Task fromString(String value) {
-        String[] parts = value.split(",");
-        int id = Integer.parseInt(parts[0]);
-        Type type = Type.valueOf(parts[1]);
-        String name = parts[2];
-        Status status = Status.valueOf(parts[3]);
-        String description = parts[4];
-
-        switch (type) {
-            case TASK:
-                Task task = new Task(name, description, status);
-                task.setId(id);
-                return task;
-            case EPIC:
-                Epic epic = new Epic(name, description);
-                epic.setId(id);
-                return epic;
-            case SUBTASK:
-                int epicId = Integer.parseInt(parts[5]);
-                Subtask subtask = new Subtask(epicId, name, description, status);
-                subtask.setId(id);
-                return subtask;
-            default:
-                throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
-        }
     }
 
     @Override

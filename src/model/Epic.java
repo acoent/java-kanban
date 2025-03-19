@@ -14,11 +14,16 @@ public class Epic extends Task {
     public Epic(String name, String description, Status status) {
         super(name, description, status);
         subtaskIds = new ArrayList<>();
+
     }
 
     public Epic(String name, String description, Status status, ArrayList<Integer> subtaskIds) {
         super(name, description, status);
         this.subtaskIds = subtaskIds;
+    }
+
+    public Type getTask() {
+        return Type.SUBTASK;
     }
 
     public void removeAllSubtasks() {
@@ -52,7 +57,13 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s", getId(), Type.EPIC, getTaskName(), getStatus(), getDescription());
+        return "Epic{" +
+                "epicName='" + getTaskName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", status=" + getStatus() +
+                ", subtaskIds=" + getSubtaskIds() +
+                '}';
     }
 
 }

@@ -19,6 +19,10 @@ public class Subtask extends Task {
         return parentEpicId;
     }
 
+    public Type getTask() {
+        return Type.SUBTASK;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -35,6 +39,12 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,%d", getId(), Type.SUBTASK, getTaskName(), getStatus(), getDescription(), getParentEpicId());
+        return "Subtask{" +
+                "subtaskName='" + getTaskName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", status=" + getStatus() +
+                ", parentEpicID=" + getParentEpicId() +
+                '}';
     }
 }
