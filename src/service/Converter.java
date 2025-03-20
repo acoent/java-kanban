@@ -17,7 +17,15 @@ public class Converter {
                 task.setId(id);
                 return task;
             case EPIC:
-                Epic epic = new Epic(name, description);
+                Epic epic = new Epic(name, description, status);
+                if (parts.length > 5) {
+                    for (int i = 5; i < parts.length; i++) {
+                        String subtaskId = parts[i];
+                        if (!subtaskId.isEmpty()) {
+                            epic.addSubtask(Integer.parseInt(subtaskId));
+                        }
+                    }
+                }
                 epic.setId(id);
                 return epic;
             case SUBTASK:

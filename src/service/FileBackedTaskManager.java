@@ -45,19 +45,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         try (BufferedReader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             String line;
             reader.readLine();
+            int id = 0;
             while ((line = reader.readLine()) != null) {
                 Task task = Converter.fromString(line);
+                int taskId = task.getId();
+                if (taskId > id) {
+                    id = taskId;
+                }
                 if (task instanceof Epic) {
-                    manager.addEpic((Epic) task);
+                    manager.epics.put(taskId, (Epic) task);
                 } else if (task instanceof Subtask) {
-                    manager.addSubtask((Subtask) task);
+                    manager.subtasks.put(taskId, (Subtask) task);
                 } else {
-                    manager.addTask(task);
+                    manager.tasks.put(taskId, task);
                 }
             }
+            manager.availableId = id + 1;
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке данных из файла", e);
         }
+
         return manager;
     }
 

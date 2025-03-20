@@ -6,15 +6,15 @@ import model.Subtask;
 import model.Task;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Subtask> subtasks;
+    protected final HashMap<Integer, Epic> epics;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected int availableId = 0;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -243,11 +243,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private int generateId() {
-        int maxTaskId = tasks.isEmpty() ? -1 : Collections.max(tasks.keySet());
-        int maxSubtaskId = subtasks.isEmpty() ? -1 : Collections.max(subtasks.keySet());
-        int maxEpicId = epics.isEmpty() ? -1 : Collections.max(epics.keySet());
-        int availableId = Math.max(maxTaskId, Math.max(maxSubtaskId, maxEpicId)) + 1;
+    protected int generateId() {
         return availableId++;
     }
 
