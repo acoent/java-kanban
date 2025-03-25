@@ -38,8 +38,8 @@ public class Converter {
         String extraField = "";
         String duration = (task.getDuration() != null) ? task.getDuration().toString() : "";
         String startTime = (task.getStartTime() != null) ? task.getStartTime().toString() : "";
-        switch (task.getClass().getSimpleName()) {
-            case "Epic":
+        switch (task.getType()) {
+            case EPIC:
                 type = "EPIC";
                 Epic epic = (Epic) task;
                 StringBuilder sb = new StringBuilder();
@@ -51,7 +51,7 @@ public class Converter {
                 }
                 extraField = sb.toString();
                 break;
-            case "Subtask":
+            case SUBTASK:
                 type = "SUBTASK";
                 Subtask subtask = (Subtask) task;
                 extraField = String.valueOf(subtask.getParentEpicId());

@@ -53,6 +53,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task newTask) {
+        if (hasTimeOverlap(newTask)) {
+            throw new IllegalArgumentException("Время задач пересекается");
+        }
         int id = generateId();
         newTask.setId(id);
         tasks.put(id, newTask);
@@ -166,10 +169,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtask(Subtask newSubtask) {
-        int id = generateId();
         if (hasTimeOverlap(newSubtask)) {
             throw new IllegalArgumentException("Время подзадач пересекается");
         }
+        int id = generateId();
         newSubtask.setId(id);
         subtasks.put(id, newSubtask);
         if (newSubtask.getStartTime() != null) {
@@ -301,17 +304,18 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    private boolean hasTimeOverlap(Subtask newSubtask) {
-        List<Subtask> subtasksList = getSubtasksByParentId(newSubtask.getParentEpicId());
-        return subtasksList.stream()
-                .filter(existingSubtask -> !existingSubtask.equals(newSubtask))
-                .anyMatch(existingSubtask -> {
-                    LocalDateTime existingStart = existingSubtask.getStartTime();
-                    LocalDateTime newStart = newSubtask.getStartTime();
-                    LocalDateTime existingEnd = existingSubtask.getEndTime();
-                    LocalDateTime newEnd = newSubtask.getEndTime();
+    private boolean hasTimeOverlap(Task newTask) {
+        return prioritizedTasks.stream()
+                .filter(existingTask -> !existingTask.equals(newTask))
+                .anyMatch(existingTask -> {
+                    LocalDateTime existingStart = existingTask.getStartTime();
+                    LocalDateTime newStart = newTask.getStartTime();
+                    LocalDateTime existingEnd = existingTask.getEndTime();
+                    LocalDateTime newEnd = newTask.getEndTime();
+
                     return existingStart != null && newStart != null && existingEnd != null && newEnd != null &&
                             !existingStart.isAfter(newEnd) && !newStart.isAfter(existingEnd);
                 });
     }
+
 }

@@ -158,9 +158,11 @@ class InMemoryTaskManagerTest {
         if (start == null) {
             start = LocalDateTime.now();
             subtask1.setStartTime(start);
+            subtask1.setDuration(Duration.ofMinutes(30));
+            taskManager.addSubtask(subtask1);
         }
-        Subtask overlappingSubtask = new Subtask(epic.getId(), "Overlapping subtask", "Description",
-                Duration.ofMinutes(30), start);
+        Subtask overlappingSubtask = new Subtask(epic.getId(), "Overlapping subtask", "Description", Duration.ofMinutes(30), start.plusMinutes(15));
         assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(overlappingSubtask));
     }
+
 }
