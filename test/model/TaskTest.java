@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 import service.TaskManager;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
@@ -14,7 +16,7 @@ class TaskTest {
 
     @BeforeEach
     void setUp() {
-        task = new Task("Task", "TaskDescription");
+        task = new Task("Task", "TaskDescription", Duration.ZERO, null);
         taskManager.addTask(task);
     }
 
@@ -27,8 +29,8 @@ class TaskTest {
 
     @Test
     void testTasksEqualityById() {
-        Task task1 = new Task("Task", "Description");
-        Task task2 = new Task("Task", "Description");
+        Task task1 = new Task("Task", "Description", Duration.ZERO, null);
+        Task task2 = new Task("Task", "Description", Duration.ZERO, null);
         task1.setId(1);
         task2.setId(1);
         assertEquals(task1, task2);
@@ -50,7 +52,7 @@ class TaskTest {
 
     @Test
     void testTaskImmutabilityOnAdd() {
-        Task task = new Task("Task", "Description");
+        Task task = new Task("Task", "Description", Duration.ZERO, null);
         taskManager.addTask(task);
 
         Task fetchedTask = taskManager.getTaskById(task.getId());
@@ -61,7 +63,7 @@ class TaskTest {
 
     @Test
     void testChangeTaskId() {
-        Task task = new Task("Task1", "Description1");
+        Task task = new Task("Task1", "Description1", Duration.ZERO, null);
         task.setId(33);
         taskManager.addTask(task);
         task.setId(22);

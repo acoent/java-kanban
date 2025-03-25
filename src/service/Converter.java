@@ -2,6 +2,9 @@ package service;
 
 import model.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Converter {
     public static Task fromString(String value) {
         String[] parts = value.split(",");
@@ -10,37 +13,31 @@ public class Converter {
         String name = parts[2];
         Status status = Status.valueOf(parts[3]);
         String description = parts[4];
-
-        switch (type) {
-            case TASK:
-                Task task = new Task(name, description, status);
-                task.setId(id);
-                return task;
-            case EPIC:
-                Epic epic = new Epic(name, description, status);
-                if (parts.length > 5) {
-                    for (int i = 5; i < parts.length; i++) {
-                        String subtaskId = parts[i];
-                        if (!subtaskId.isEmpty()) {
-                            epic.addSubtask(Integer.parseInt(subtaskId));
-                        }
-                    }
-                }
-                epic.setId(id);
-                return epic;
-            case SUBTASK:
-                int epicId = Integer.parseInt(parts[5]);
-                Subtask subtask = new Subtask(epicId, name, description, status);
-                subtask.setId(id);
-                return subtask;
-            default:
-                throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+        Duration duration = Duration.ZERO;
+        LocalDateTime startTime = null;
+        if (parts.length > 5 && !parts[5].isEmpty()) {
+            duration = Duration.parse(parts[5]);
         }
+        if (parts.length > 6 && !parts[6].isEmpty()) {
+            startTime = LocalDateTime.parse(parts[6]);
+        }
+        Task task = switch (type) {
+            case TASK -> new Task(name, description, status, duration, startTime);
+            case EPIC -> new Epic(name, description, status);
+            case SUBTASK -> {
+                int epicId = Integer.parseInt(parts[7]);
+                yield new Subtask(epicId, name, description, status, duration, startTime);
+            }
+        };
+        task.setId(id);
+        return task;
     }
 
     public static String toString(Task task) {
         String type;
         String extraField = "";
+        String duration = (task.getDuration() != null) ? task.getDuration().toString() : "";
+        String startTime = (task.getStartTime() != null) ? task.getStartTime().toString() : "";
         switch (task.getClass().getSimpleName()) {
             case "Epic":
                 type = "EPIC";
@@ -63,6 +60,6 @@ public class Converter {
                 type = "TASK";
                 break;
         }
-        return task.getId() + "," + type + "," + task.getTaskName() + "," + task.getStatus() + "," + task.getDescription() + "," + extraField;
+        return task.getId() + "," + type + "," + task.getTaskName() + "," + task.getStatus() + "," + task.getDescription() + "," + duration + "," + startTime + (extraField.isEmpty() ? "" : "," + extraField);
     }
 }

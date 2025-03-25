@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 class FileBackedTaskManagerTest {
     private File tempFile;
@@ -23,7 +24,6 @@ class FileBackedTaskManagerTest {
         tempFile = File.createTempFile("task_manager", ".csv");
         manager = new FileBackedTaskManager(tempFile);
     }
-
 
     @Test
     void shouldSaveAndLoadEmptyFile() {
@@ -36,10 +36,10 @@ class FileBackedTaskManagerTest {
 
     @Test
     void shouldSaveAndLoadMultipleTasks() {
-        Task task1 = new Task("Task 1", "Description 1", Status.NEW);
-        Task task2 = new Task("Task 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task("Task 1", "Description 1", Status.NEW, Duration.ZERO, null);
+        Task task2 = new Task("Task 2", "Description 2", Status.IN_PROGRESS, Duration.ZERO, null);
         Epic epic1 = new Epic("Epic 1", "Epic Description", Status.NEW);
-        Subtask subtask1 = new Subtask(epic1.getId(), "Subtask 1", "Subtask Desc", Status.DONE);
+        Subtask subtask1 = new Subtask(epic1.getId(), "Subtask 1", "Subtask Desc", Status.DONE, Duration.ZERO, null);
         manager.addTask(task1);
         manager.addTask(task2);
         manager.addEpic(epic1);
@@ -60,6 +60,15 @@ class FileBackedTaskManagerTest {
         assertEquals(Status.NEW, epics.get(0).getStatus());
         assertEquals("Subtask 1", subtasks.get(0).getTaskName());
         assertEquals(Status.DONE, subtasks.get(0).getStatus());
+    }
+
+    @Test
+    void testFileOperationsExceptions() {
+        assertDoesNotThrow(() -> manager.save());
+        assertThrows(RuntimeException.class, () -> {
+            File invalidFile = new File("non_existent_file.csv");
+            FileBackedTaskManager.loadFromFile(invalidFile);
+        });
     }
 
 }

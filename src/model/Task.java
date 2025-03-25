@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,17 +9,43 @@ public class Task {
     private final String taskName;
     private int id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
-    public Task(String taskName, String description) {
+    public Task(String taskName, String description, Duration duration, LocalDateTime startTime) {
         this.taskName = taskName;
         this.description = description;
         status = Status.NEW;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
-    public Task(String taskName, String description, Status status) {
+    public Task(String taskName, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return (startTime != null) ? startTime.plus(duration) : null;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     public String getTaskName() {
@@ -63,11 +91,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "taskName='" + taskName + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return "Task{" + "taskName='" + taskName + '\'' + ", description='" + description + '\'' + ", id=" + id + ", status=" + status + '}';
     }
 }

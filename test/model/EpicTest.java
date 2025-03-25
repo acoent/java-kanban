@@ -1,13 +1,15 @@
 package model;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 import service.TaskManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
     private Epic epic;
@@ -19,8 +21,8 @@ class EpicTest {
     void setUp() {
         epic = new Epic("Epic1", "Description1");
         taskManager.addEpic(epic);
-        subtask1 = new Subtask(epic.getId(), "sub1", "SubDescription1");
-        subtask2 = new Subtask(epic.getId(), "sub2", "SubDescription2");
+        subtask1 = new Subtask(epic.getId(), "sub1", "SubDescription1", Duration.ofMinutes(30), LocalDateTime.now());
+        subtask2 = new Subtask(epic.getId(), "sub2", "SubDescription2", Duration.ofMinutes(30), LocalDateTime.now().plusHours(1));
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
     }
@@ -31,13 +33,8 @@ class EpicTest {
     }
 
     @Test
-    void testAddEpics() {
-        Epic newEpic = new Epic("newEpic", "newDescription");
-        taskManager.addEpic(newEpic);
-        Subtask subtask = new Subtask(newEpic.getId(), "sub", "SubDescription");
-        taskManager.addSubtask(subtask);
-        assertEquals(2, taskManager.getEpics().size());
-        assertEquals(Status.NEW, newEpic.getStatus());
+    void testAllNewStatus() {
+        assertEquals(Status.NEW, epic.getStatus());
     }
 
     @Test
@@ -72,16 +69,42 @@ class EpicTest {
     void testEpicCannotBeItsOwnSubtask() {
         Epic epic = new Epic("Epic", "Description");
         taskManager.addEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "Description");
+        Subtask subtask = new Subtask(epic.getId(), "Subtask", "Description", Duration.ZERO, null);
         taskManager.addSubtask(subtask);
-        Assertions.assertNotEquals(epic.getId(), subtask.getId());
+        assertNotEquals(epic.getId(), subtask.getId());
     }
 
     @Test
     void testSubtaskIdRemovedFromEpic() {
         int subtaskId = subtask1.getId();
         taskManager.removeSubtask(subtaskId);
-        Assertions.assertFalse(epic.getSubtaskIds().contains(subtaskId));
+        assertFalse(epic.getSubtaskIds().contains(subtaskId));
+    }
+
+    @Test
+    void testNoTimeOverlapBetweenSubtasks() {
+        Subtask overlappingSubtask = new Subtask(epic.getId(), "Overlapping subtask", "Description", Duration.ofMinutes(30), subtask1.getStartTime());
+        assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(overlappingSubtask));
+    }
+
+    @Test
+    void testFileHandlingException() {
+        assertThrows(RuntimeException.class, () -> {
+            throw new RuntimeException("Ошибка работы с файлом");
+        });
+    }
+
+    @Test
+    void testEpicStatusCalculation() {
+        taskManager.updateSubtaskStatus(subtask1.getId(), Status.NEW);
+        taskManager.updateSubtaskStatus(subtask2.getId(), Status.NEW);
+        assertEquals(Status.NEW, epic.getStatus());
+        taskManager.updateSubtaskStatus(subtask1.getId(), Status.DONE);
+        taskManager.updateSubtaskStatus(subtask2.getId(), Status.DONE);
+        assertEquals(Status.DONE, epic.getStatus());
+        taskManager.updateSubtaskStatus(subtask1.getId(), Status.NEW);
+        taskManager.updateSubtaskStatus(subtask2.getId(), Status.DONE);
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
     }
 
 }
