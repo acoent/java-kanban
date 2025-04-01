@@ -9,6 +9,7 @@ import service.TaskManager;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaskTest {
     private Task task;
@@ -67,8 +68,8 @@ class TaskTest {
         task.setId(33);
         taskManager.addTask(task);
         task.setId(22);
-        Assertions.assertNull(taskManager.getTaskById(33));
-        Assertions.assertNull(taskManager.getTaskById(22));
+        assertThrows(IllegalArgumentException.class, () -> taskManager.getTaskById(33));
+        assertThrows(IllegalArgumentException.class, () -> taskManager.getTaskById(22));
     }
 
 }

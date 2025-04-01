@@ -1,5 +1,6 @@
 package service;
 
+import exception.TimeIntersectionException;
 import model.Epic;
 import model.Status;
 import model.Subtask;
@@ -7,13 +8,7 @@ import model.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -22,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Epic> epics;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     protected int availableId = 0;
-    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
+    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId));
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -53,9 +48,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task newTask) {
-        if (hasTimeOverlap(newTask)) {
-            throw new IllegalArgumentException("Время задач пересекается");
-        }
+        if (hasTimeOverlap(newTask)) throw new TimeIntersectionException();
         int id = generateId();
         newTask.setId(id);
         tasks.put(id, newTask);
@@ -68,7 +61,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
         if (task == null) {
-            return null;
+            throw new IllegalArgumentException("Задача с таким ID не найдена");
         }
         Task snapshot = new Task(task.getTaskName(), task.getDescription(), task.getStatus(), task.getDuration(), task.getStartTime());
         snapshot.setId(task.getId());
@@ -116,7 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpicById(int id) {
         Epic epic = epics.get(id);
         if (epic == null) {
-            return null;
+            throw new IllegalArgumentException("Эпик с таким ID не найден");
         }
         Epic snapshot = new Epic(epic.getTaskName(), epic.getDescription(), epic.getStatus(), epic.getSubtaskIds());
         snapshot.setId(epic.getId());
@@ -156,10 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Subtask> getSubtasksByParentId(int parentId) {
         Epic epic = epics.get(parentId);
-        return epic == null ? new ArrayList<>() : epic.getSubtaskIds().stream()
-                .map(subtasks::get)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return epic == null ? new ArrayList<>() : epic.getSubtaskIds().stream().map(subtasks::get).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -170,7 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubtask(Subtask newSubtask) {
         if (hasTimeOverlap(newSubtask)) {
-            throw new IllegalArgumentException("Время подзадач пересекается");
+            throw new TimeIntersectionException();
         }
         int id = generateId();
         newSubtask.setId(id);
@@ -203,7 +193,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtaskById(int id) {
         Subtask subtask = subtasks.get(id);
         if (subtask == null) {
-            return null;
+            throw new IllegalArgumentException("Подзадача с таким ID не найдена");
         }
         Subtask snapshot = new Subtask(subtask.getParentEpicId(), subtask.getTaskName(), subtask.getDescription(), subtask.getStatus(), subtask.getDuration(), subtask.getStartTime());
         snapshot.setId(subtask.getId());
@@ -265,10 +255,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return;
         }
-        List<Subtask> subtasksList = epic.getSubtaskIds().stream()
-                .map(subtasks::get)
-                .filter(Objects::nonNull)
-                .toList();
+        List<Subtask> subtasksList = epic.getSubtaskIds().stream().map(subtasks::get).filter(Objects::nonNull).toList();
 
         if (subtasksList.isEmpty()) {
             epic.setStatus(Status.NEW);
@@ -305,17 +292,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean hasTimeOverlap(Task newTask) {
-        return prioritizedTasks.stream()
-                .filter(existingTask -> !existingTask.equals(newTask))
-                .anyMatch(existingTask -> {
-                    LocalDateTime existingStart = existingTask.getStartTime();
-                    LocalDateTime newStart = newTask.getStartTime();
-                    LocalDateTime existingEnd = existingTask.getEndTime();
-                    LocalDateTime newEnd = newTask.getEndTime();
-
-                    return existingStart != null && newStart != null && existingEnd != null && newEnd != null &&
-                            !existingStart.isAfter(newEnd) && !newStart.isAfter(existingEnd);
-                });
+        if (newTask.getStartTime() == null || newTask.getEndTime() == null) {
+            return false;
+        }
+        List<Task> allTasks = new ArrayList<>();
+        allTasks.addAll(tasks.values());
+        allTasks.addAll(subtasks.values());
+        return allTasks.stream().filter(existingTask -> existingTask.getStartTime() != null && existingTask.getEndTime() != null).anyMatch(existingTask -> {
+            LocalDateTime newStart = newTask.getStartTime();
+            LocalDateTime newEnd = newTask.getEndTime();
+            LocalDateTime existingStart = existingTask.getStartTime();
+            LocalDateTime existingEnd = existingTask.getEndTime();
+            return !(newEnd.isBefore(existingStart) || newStart.isAfter(existingEnd));
+        });
     }
 
 }

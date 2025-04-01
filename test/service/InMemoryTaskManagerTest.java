@@ -1,5 +1,6 @@
 package service;
 
+import exception.TimeIntersectionException;
 import model.Epic;
 import model.Status;
 import model.Subtask;
@@ -61,7 +62,7 @@ class InMemoryTaskManagerTest {
     @Test
     void testRemoveTask() {
         taskManager.removeTask(task.getId());
-        assertNull(taskManager.getTaskById(task.getId()));
+        assertThrows(IllegalArgumentException.class, () -> taskManager.getTaskById(task.getId()));
     }
 
     @Test
@@ -123,7 +124,7 @@ class InMemoryTaskManagerTest {
     @Test
     void testRemoveEpicAndSubtasks() {
         taskManager.removeEpic(epic.getId());
-        assertNull(taskManager.getEpicById(epic.getId()));
+        assertThrows(IllegalArgumentException.class, () -> taskManager.getEpicById(epic.getId()));
         assertEquals(0, taskManager.getSubtasks().size());
     }
 
@@ -159,10 +160,10 @@ class InMemoryTaskManagerTest {
             start = LocalDateTime.now();
             subtask1.setStartTime(start);
             subtask1.setDuration(Duration.ofMinutes(30));
-            taskManager.addSubtask(subtask1);
+            assertThrows(TimeIntersectionException.class, () -> taskManager.addSubtask(subtask1));
         }
         Subtask overlappingSubtask = new Subtask(epic.getId(), "Overlapping subtask", "Description", Duration.ofMinutes(30), start.plusMinutes(15));
-        assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(overlappingSubtask));
+        assertThrows(TimeIntersectionException.class, () -> taskManager.addSubtask(overlappingSubtask));
     }
 
 }

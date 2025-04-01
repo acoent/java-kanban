@@ -1,5 +1,6 @@
 package model;
 
+import exception.TimeIntersectionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,7 +85,7 @@ class EpicTest {
     @Test
     void testNoTimeOverlapBetweenSubtasks() {
         Subtask overlappingSubtask = new Subtask(epic.getId(), "Overlapping subtask", "Description", Duration.ofMinutes(30), subtask1.getStartTime());
-        assertThrows(IllegalArgumentException.class, () -> taskManager.addSubtask(overlappingSubtask));
+        assertThrows(TimeIntersectionException.class, () -> taskManager.addSubtask(overlappingSubtask));
     }
 
     @Test
