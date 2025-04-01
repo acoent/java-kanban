@@ -72,10 +72,10 @@ public abstract class BaseHttpHandler {
     }
 
     protected void sendNotFound(HttpExchange exchange) throws IOException {
-        sendError(exchange, 404); // Not Found
+        sendError(exchange, 404);
     }
 
     protected void sendHasInteractions(HttpExchange exchange) throws IOException {
-        sendError(exchange, 406); // Not Acceptable
+        sendError(exchange, 406);
     }
 }
