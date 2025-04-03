@@ -71,7 +71,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         if (newSubtask.getId() == 0) {
             try {
                 taskManager.addSubtask(newSubtask);
-                sendText(exchange, "Новая подзадача сохранена.", 201);
+                sendText(exchange, "Новая подзадача сохранена. ID: " + newSubtask.getId(), 201);
             } catch (ManagerSaveException e) {
                 sendText(exchange, e.getMessage(), 500);
             } catch (TimeIntersectionException e) {

@@ -60,15 +60,15 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handlePostTask(HttpExchange exchange) throws IOException {
-        final Task task = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Task.class);
-        if (task == null) {
+        final Task newTask = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Task.class);
+        if (newTask == null) {
             sendText(exchange, "Некоректный запрос.", 400);
             return;
         }
-        if (task.getId() == 0) {
+        if (newTask.getId() == 0) {
             try {
-                taskManager.addTask(task);
-                sendText(exchange, "Новая задача сохранена.", 201);
+                taskManager.addTask(newTask);
+                sendText(exchange, "Новая задача сохранена. ID: " + newTask.getId(), 201);
             } catch (TimeIntersectionException e) {
                 sendText(exchange, e.getMessage(), 406);
             } catch (ManagerSaveException e) {

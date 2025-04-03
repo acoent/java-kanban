@@ -89,7 +89,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             try {
                 final Epic epic = new Epic(newEpic.getTaskName(), newEpic.getDescription());
                 taskManager.addEpic(epic);
-                sendText(exchange, "Новый эпик сохранен.", 201);
+                sendText(exchange, "Новый эпик сохранен. ID: " + epic.getId(), 201);
             } catch (ManagerSaveException e) {
                 sendText(exchange, e.getMessage(), 500);
             }
