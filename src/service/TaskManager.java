@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
+
+    List<Task> getPrioritizedTasks();
+
     void taskUpdate(int id, Task task);
 
     boolean isValidTaskId(int id);

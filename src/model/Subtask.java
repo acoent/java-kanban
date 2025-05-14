@@ -1,22 +1,29 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private final Integer parentEpicId;
 
-    public Subtask(Integer parentEpicId, String name, String description) {
-        super(name, description);
+    public Subtask(Integer parentEpicId, String name, String description, Duration duration, LocalDateTime startTime) {
+        super(name, description, duration, startTime);
         this.parentEpicId = parentEpicId;
     }
 
-    public Subtask(Integer parentEpicId, String name, String description, Status status) {
-        super(name, description, status);
+    public Subtask(Integer parentEpicId, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        super(name, description, status, duration, startTime);
         this.parentEpicId = parentEpicId;
     }
 
     public Integer getParentEpicId() {
         return parentEpicId;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SUBTASK;
     }
 
     @Override
@@ -35,12 +42,6 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "subtaskName='" + getTaskName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", id=" + getId() +
-                ", status=" + getStatus() +
-                ", parentEpicID=" + getParentEpicId() +
-                '}';
+        return "Subtask{" + "subtaskName='" + getTaskName() + '\'' + ", description='" + getDescription() + '\'' + ", id=" + getId() + ", status=" + getStatus() + ", parentEpicID=" + getParentEpicId() + '}';
     }
 }

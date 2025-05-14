@@ -1,10 +1,7 @@
-package test;
+package service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import service.HistoryManager;
-import service.Managers;
-import service.TaskManager;
 
 public class ManagersTest {
     @Test
